@@ -2,7 +2,11 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class FrustrumCulling : MonoBehaviour
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
+
+public class FrustumCulling : MonoBehaviour
 {
     // Maxima cantidad de vertices por plano, habiendo 6 planos
     const uint maxVertexPerPlane = 4;
@@ -22,7 +26,7 @@ public class FrustrumCulling : MonoBehaviour
     Camera camera;
 
     // Buscador de meshs (mallas) -> toma un mesh y los pasa al Mesh Renderer para que sea renderizado en la pantalla.
-    MeshFilter[] filters = default;
+    [SerializeField] MeshFilter[] filters = default;
 
     // Start is called before the first frame update
     void Start()
@@ -181,5 +185,68 @@ public class FrustrumCulling : MonoBehaviour
         Vector3 norm = Vector3.Normalize(dir);
         return norm;
     }
+
+
+#if UNITY_EDITOR
+    private void OnDrawGizmos()
+    {
+
+        Vector3[] tempDrawVertex = new Vector3[5];
+
+        // Visualizo el Frustum far plane
+        Handles.color = frustumPlaneColor;
+        Handles.DrawAAConvexPolygon(frustumCornerFar);
+        Handles.color = frustumLineColor;
+        tempDrawVertex = new Vector3[] { frustumCornerFar[0] , frustumCornerFar[1] , frustumCornerFar[2] , frustumCornerFar[3] , frustumCornerFar[0] };
+        Handles.DrawAAPolyLine(tempDrawVertex);
+        Handles.color = Color.blue;
+        Handles.ArrowHandleCap(0, CenterOfPlane(frustumCornerFar), Quaternion.LookRotation(NormalFromPlane(frustumCornerFar)), 1, EventType.Repaint);
+
+        // Visualizo el Frustum near plane
+        Handles.color = frustumPlaneColor;
+        Handles.DrawAAConvexPolygon(frustumCornerNear);
+        Handles.color = frustumLineColor;
+        tempDrawVertex = new Vector3[] { frustumCornerNear[0], frustumCornerNear[1], frustumCornerNear[2], frustumCornerNear[3], frustumCornerNear[0] };
+        Handles.DrawAAPolyLine(tempDrawVertex);
+        Handles.color = Color.blue;
+        Handles.ArrowHandleCap(0, CenterOfPlane(frustumCornerNear), Quaternion.LookRotation(-NormalFromPlane(frustumCornerNear)), 1, EventType.Repaint);
+
+        // Visualizo el Frustum left plane
+        Handles.color = frustumPlaneColor;
+        Handles.DrawAAConvexPolygon(frustumCornerLeft);
+        Handles.color = frustumLineColor;
+        tempDrawVertex = new Vector3[] { frustumCornerLeft[0], frustumCornerLeft[1], frustumCornerLeft[2], frustumCornerLeft[3], frustumCornerLeft[0] };
+        Handles.DrawAAPolyLine(tempDrawVertex);
+        Handles.color = Color.blue;
+        Handles.ArrowHandleCap(0, CenterOfPlane(frustumCornerLeft), Quaternion.LookRotation(NormalFromPlane(frustumCornerLeft)), 1, EventType.Repaint);
+
+        // Visualizo el Frustum right plane
+        Handles.color = frustumPlaneColor;
+        Handles.DrawAAConvexPolygon(frustumCornerRight);
+        Handles.color = frustumLineColor;
+        tempDrawVertex = new Vector3[] { frustumCornerRight[0], frustumCornerRight[1], frustumCornerRight[2], frustumCornerRight[3], frustumCornerRight[0] };
+        Handles.DrawAAPolyLine(tempDrawVertex);
+        Handles.color = Color.blue;
+        Handles.ArrowHandleCap(0, CenterOfPlane(frustumCornerRight), Quaternion.LookRotation(NormalFromPlane(frustumCornerRight)), 1, EventType.Repaint);
+
+        // Visualizo el Frustum up plane
+        Handles.color = frustumPlaneColor;
+        Handles.DrawAAConvexPolygon(frustumCornerUp);
+        Handles.color = frustumLineColor;
+        tempDrawVertex = new Vector3[] { frustumCornerUp[0], frustumCornerUp[1], frustumCornerUp[2], frustumCornerUp[3], frustumCornerUp[0] };
+        Handles.DrawAAPolyLine(tempDrawVertex);
+        Handles.color = Color.blue;
+        Handles.ArrowHandleCap(0, CenterOfPlane(frustumCornerUp), Quaternion.LookRotation(NormalFromPlane(frustumCornerUp)), 1, EventType.Repaint);
+
+        // Visualizo el Frustum down plane
+        Handles.color = frustumPlaneColor;
+        Handles.DrawAAConvexPolygon(frustumCornerDown);
+        Handles.color = frustumLineColor;
+        tempDrawVertex = new Vector3[] { frustumCornerDown[0], frustumCornerDown[1], frustumCornerDown[2], frustumCornerDown[3], frustumCornerDown[0] };
+        Handles.DrawAAPolyLine(tempDrawVertex);
+        Handles.color = Color.blue;
+        Handles.ArrowHandleCap(0, CenterOfPlane(frustumCornerDown), Quaternion.LookRotation(NormalFromPlane(frustumCornerDown)), 1, EventType.Repaint);
+    }
+#endif
 
 }
