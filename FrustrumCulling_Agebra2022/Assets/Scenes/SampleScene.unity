@@ -389,6 +389,7 @@ GameObject:
   - component: {fileID: 1927080854}
   - component: {fileID: 1927080853}
   - component: {fileID: 1927080852}
+  - component: {fileID: 1927080855}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -461,6 +462,20 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1927080855
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1927080851}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a1bf3a8f9c3d831419476ab6aa889da3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  frustumLineColor: {r: 1, g: 0.07976175, b: 0, a: 1}
+  frustumPlaneColor: {r: 0, g: 0.36995363, b: 1, a: 1}
 --- !u!1 &1988180362
 GameObject:
   m_ObjectHideFlags: 0
