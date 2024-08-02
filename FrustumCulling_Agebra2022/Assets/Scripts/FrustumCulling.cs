@@ -90,6 +90,20 @@ public class FrustumCulling : MonoBehaviour
         }
     }
 
+    // Transformo las posiciones locales en globales
+    private Vector3 FromLocalToWolrd(Vector3 point, Transform transformRef)
+    {
+        return transformRef.TransformPoint(point);
+
+        //// Se multiplica cada valor en x, y, z por la escala local del tranform referenciado
+        //Vector3 result = new Vector3(point.x * transformRef.localScale.x, point.y * transformRef.localScale.y, point.z * transformRef.localScale.z);
+
+        //// Tambien se tiene en cuenta la rotacion
+        //result = transformRef.localRotation * result;
+
+        //return result + transformRef.position; // Se devuelve el resultado mas la posicion del transform
+    }
+
     // Uso todos los datos de las mesh que estan dentro de la escena para hacer los respectivos calculos (prendo o apago el game object)
     private void FrustumUpdate()
     {
@@ -141,13 +155,13 @@ public class FrustumCulling : MonoBehaviour
     // Calculo la normal de un plano y la direccion desde el centro del plano al vertice, para saber si esta en la misma direccion de la normal del plano
     private bool IsVertexInNormalPlane(Vector3 vertex, Vector3 centerPlane, Vector3 normalPlane)
     {
-        // Calculamos el vector que va desde el centro del plano hacia el vértice
+        // Calculamos el vector que va desde el centro del plano hacia el vï¿½rtice
         Vector3 direction = vertex - centerPlane;
 
-        // Normalizamos el vector para solo comparar la dirección
+        // Normalizamos el vector para solo comparar la direcciï¿½n
         direction = direction.normalized;
 
-        // Usamos el producto punto para ver si el vértice está en la misma dirección que la normal del plano
+        // Usamos el producto punto para ver si el vï¿½rtice estï¿½ en la misma direcciï¿½n que la normal del plano
         // Si el resultado es positivo, el angulo entre los dos vertices es menor a 90 grados
         // Si es negativo es mayor
         return Vector3.Dot(direction, normalPlane) > 0; // Si es mayor a cero esta por delante de la cara del plano.
