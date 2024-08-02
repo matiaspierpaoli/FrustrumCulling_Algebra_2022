@@ -93,13 +93,15 @@ public class FrustumCulling : MonoBehaviour
     // Transformo las posiciones locales en globales
     private Vector3 FromLocalToWolrd(Vector3 point, Transform transformRef)
     {
-        // Se multiplica cada valor en x, y, z por la escala local del tranform referenciado
-        Vector3 result = new Vector3(point.x * transformRef.localScale.x, point.y * transformRef.localScale.y, point.z * transformRef.localScale.z);
+        return transformRef.TransformPoint(point);
 
-        // Tambien se tiene en cuenta la rotacion
-        result = transformRef.localRotation * result;
+        //// Se multiplica cada valor en x, y, z por la escala local del tranform referenciado
+        //Vector3 result = new Vector3(point.x * transformRef.localScale.x, point.y * transformRef.localScale.y, point.z * transformRef.localScale.z);
 
-        return result + transformRef.position; // Se devuelve el resultado mas la posicion del transform
+        //// Tambien se tiene en cuenta la rotacion
+        //result = transformRef.localRotation * result;
+
+        //return result + transformRef.position; // Se devuelve el resultado mas la posicion del transform
     }
 
     // Uso todos los datos de las mesh que estan dentro de la escena para hacer los respectivos calculos (prendo o apago el game object)
