@@ -81,25 +81,13 @@ public class FrustumCulling : MonoBehaviour
         // Se recorre 4 veces en total, es decir por cada vertice en los planos
         for (int i = 0; i < maxVertexPerPlane; i++)
         {
-            frustumCornerFar[i] = FromLocalToWolrd(frustumCornerFar[i], camera.transform);
-            frustumCornerNear[i] = FromLocalToWolrd(frustumCornerNear[i], camera.transform);
-            frustumCornerLeft[i] = FromLocalToWolrd(frustumCornerLeft[i], camera.transform);
-            frustumCornerRight[i] = FromLocalToWolrd(frustumCornerRight[i], camera.transform);
-            frustumCornerUp[i] = FromLocalToWolrd(frustumCornerUp[i], camera.transform);
-            frustumCornerDown[i] = FromLocalToWolrd(frustumCornerDown[i], camera.transform);
+            frustumCornerFar[i] = camera.transform.TransformPoint(frustumCornerFar[i]);
+            frustumCornerNear[i] = camera.transform.TransformPoint(frustumCornerNear[i]);
+            frustumCornerLeft[i] = camera.transform.TransformPoint(frustumCornerLeft[i]);
+            frustumCornerRight[i] = camera.transform.TransformPoint(frustumCornerRight[i]);
+            frustumCornerUp[i] = camera.transform.TransformPoint(frustumCornerUp[i]);
+            frustumCornerDown[i] = camera.transform.TransformPoint(frustumCornerDown[i]);
         }
-    }
-
-    // Transformo las posiciones locales en globales
-    private Vector3 FromLocalToWolrd(Vector3 point, Transform transformRef)
-    {
-        // Se multiplica cada valor en x, y, z por la escala local del tranform referenciado
-        Vector3 result = new Vector3(point.x * transformRef.localScale.x, point.y * transformRef.localScale.y, point.z * transformRef.localScale.z);
-
-        // Tambien se tiene en cuenta la rotacion
-        result = transformRef.localRotation * result;
-
-        return result + transformRef.position; // Se devuelve el resultado mas la posicion del transform
     }
 
     // Uso todos los datos de las mesh que estan dentro de la escena para hacer los respectivos calculos (prendo o apago el game object)
@@ -119,9 +107,9 @@ public class FrustumCulling : MonoBehaviour
                 Vector3 v3 = item.mesh.vertices[item.mesh.GetIndices(0)[i + 2]];
 
                 // Paso las coordenadas locales a globales...
-                v1 = FromLocalToWolrd(v1, item.transform);
-                v2 = FromLocalToWolrd(v2, item.transform);
-                v3 = FromLocalToWolrd(v3, item.transform);
+                v1 = item.transform.TransformPoint(v1);
+                v2 = item.transform.TransformPoint(v2);
+                v3 = item.transform.TransformPoint(v3);
 
                 if (IsVertexInFrustum(v1) || IsVertexInFrustum(v2) || IsVertexInFrustum(v3))
                 {
@@ -134,9 +122,7 @@ public class FrustumCulling : MonoBehaviour
                 {
                     item.gameObject.SetActive(false); // "Apago el objeto"
                 }
-
             }
-
         }
     }
 
@@ -155,8 +141,16 @@ public class FrustumCulling : MonoBehaviour
     // Calculo la normal de un plano y la direccion desde el centro del plano al vertice, para saber si esta en la misma direccion de la normal del plano
     private bool IsVertexInNormalPlane(Vector3 vertex, Vector3 centerPlane, Vector3 normalPlane)
     {
-        // Vector3.Dot devuele el resultado de la multiplacion de las magnitudes por el coseno del angulo entre estos vectores
-        return Vector3.Dot((vertex - centerPlane).normalized, normalPlane) > 0; // Si es mayor a cero esta por delante de la cara del plano.
+        // Calculamos el vector que va desde el centro del plano hacia el vértice
+        Vector3 direction = vertex - centerPlane;
+
+        // Normalizamos el vector para solo comparar la dirección
+        direction = direction.normalized;
+
+        // Usamos el producto punto para ver si el vértice está en la misma dirección que la normal del plano
+        // Si el resultado es positivo, el angulo entre los dos vertices es menor a 90 grados
+        // Si es negativo es mayor
+        return Vector3.Dot(direction, normalPlane) > 0; // Si es mayor a cero esta por delante de la cara del plano.
     }
 
     // Calculo el centro del plano en base a sus vertices
